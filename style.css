@@ -1,0 +1,9 @@
+.big {
+    height: 90px;
+    width: 90px;
+    line-height: 75px;
+}
+
+* {
+	zoom: 120%;
+}

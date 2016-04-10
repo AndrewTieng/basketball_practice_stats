@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Basketball App</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<link rel='stylesheet' href='style.css'>
+	<script src="basketball.js"></script>
+	<script src="https://code.jquery.com/jquery-2.2.2.min.js" integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+	<div class='btn btn-success big' id='shot-make'>Make</div>
+	<div class='btn btn-danger big' id='shot-miss'>Miss</div>
+	<div class='btn btn-warning big' id='next-drill'>Next Drill</div></br>
+	<!--<div class='btn btn-warning' id='start-time'>Engage Start</div>-->
+	<!--<div class='btn btn-warning' id='stop-time'>Engage Stop</div>-->
+	<!--<div class='btn btn-warning' id='show-time'>Show Time</div>-->
+	
+	<div class='shot name'>Hit Next Drill to Start</div>
+	<div class='shots made'></div>
+	<div class='time test'></div>
+	
+	<script>
+		//Counts makes
+		var shotMake = 0;
+		var makeAdder = function(plusOne){
+			shotMake = shotMake + plusOne;
+		};
+		
+		//Counts misses
+		var shotMiss = 0;
+		var missAdder = function(plusOne){
+			shotMiss = shotMiss + plusOne;
+		};
+		
+		//Random counter to increment workouts in the array
+		var i = -1;
+		var iAdder = function(plusOne){
+			i = i + plusOne;
+		};
+		
+		//Random counter to store make and miss data
+		var a = 0;
+		var aAdder = function(plusOne){
+			a = a + plusOne;
+		};
+		
+		//Variable determining number of reps
+		var reps = 0;
+		
+		//Make and miss data
+		var drillMakeMiss = [0,0,0,0,0,0,0,0,0,0];
+	
+		//Workout names
+		var drillName = ['Hesitation-Right', 'Hesitation-Left', '1-Dribble Pull-Up-Right', '1-Dribble Pull-Up-Left', 'Freethrow'];
+		
+		//Workout time data
+		var drillTime = [0,0,0,0,0];
+	
+		//Workout time markers
+		var startTime = 0;
+		var stopTime = 0;
+		
+		//Function to convert milliseconds to MM:SS
+		function millisToMinutesAndSeconds(millis) {
+		  var minutes = Math.floor(millis / 60000);
+		  var seconds = ((millis % 60000) / 1000).toFixed(0);
+		  return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+		};
+
+		
+		
+		$(document).ready(function(){
+			//Hitting button Make
+			$('#shot-make').click(function(){
+				if(shotMake == 0 && shotMiss == 0 && i >= 0) {
+					startTime = Date.now();	
+				};
+				if(i < 0) {
+					$('div.made').replaceWith('<div class="shots made">Hit <strong>Next Drill</strong> button to begin!</div>');
+				};
+				if(i >= 0) {
+					if(i <= drillName.length - 1) {
+						if(shotMake == reps) {
+							alert('Drill Complete - Hit Next Drill!');
+						} else {
+							makeAdder(1);
+							$('div.made').replaceWith('<div class="shots made">' + shotMake + ' / ' + (shotMake + shotMiss) + ' = ' + (shotMake/(shotMake+shotMiss)*100).toFixed(1) + '%</div>');
+							if(shotMake == reps) {
+								stopTime = Date.now();	
+								if (i !== drillName.length - 1) {
+									alert('Drill Complete - Hit Next Drill!');
+								};
+								if(i == drillName.length - 1) {
+									alert('Workout Complete!!! Click See Stats to Review Workout!');
+									$('#next-drill').text("See Stats");
+								};
+							};
+						};
+					};
+				};
+			});
+			
+			//Hitting button Miss	
+			$('#shot-miss').click(function(){
+				if(shotMake == 0 && shotMiss == 0 && i >= 0) {
+					startTime = Date.now();
+				};
+				if(i < 0) {
+					$('div.made').replaceWith('<div class="shots made">Hit <strong>Next Drill</strong> button to begin!</div>');
+				};
+				if(i >= 0) {
+					if(i <= drillName.length - 1) {
+						if(shotMake == reps) {
+							alert('Drill Complete - Hit Next Drill!');
+						} else {
+							missAdder(1);
+							$('div.made').replaceWith('<div class="shots made">' + shotMake + ' / ' + (shotMake + shotMiss) + ' = ' + (shotMake/(shotMake+shotMiss)*100).toFixed(1) + '%</div>');
+						};
+					};
+				};
+			});
+			
+			//Hitting button Next Drill
+			$('#next-drill').click(function(){
+				if(i < drillName.length) {
+					//Covers pre-workout, asks for reps twice then stops
+					if(i == -1) {	
+						reps = Math.round(prompt('How many reps (made baskets) per drill?'));
+						if (reps >= 1) {
+							iAdder(1);
+							$('div.name').html('<div class="shots name">' + drillName[i] + ' x ' + reps + ' makes </div>');
+							shotMake = 0
+							shotMiss = 0
+							$('div.made').replaceWith("<div class='shots made'>0 / 0 = 0%</div>");
+						} else {
+							reps = Math.round(prompt('Please enter a whole number greater than 0. How many reps (made baskets) per drill?'));
+								if (reps >= 1) {
+									iAdder(1);
+									$('div.name').html('<div class="shots name">' + drillName[i] + ' x ' + reps + ' makes </div>');
+									shotMake = 0
+									shotMiss = 0
+									$('div.made').replaceWith("<div class='shots made'>0 / 0 = 0%</div>");
+								} else {
+									alert('You SUCK at following instructions!!!');
+								};
+						};
+					} else
+					
+					//Covers workout 1
+					if (i == 0) {
+						if(shotMake == 0 && shotMiss == 0) {
+							alert('Keep shooting until ' + reps + ' makes');
+						} else if (shotMake !== 0 || shotMiss !== 0) {
+							//if reps are complete, moves to next drill
+							if(shotMake == reps) {
+								drillMakeMiss[a] = shotMake
+								aAdder(1)
+								drillMakeMiss[a] = shotMiss
+								aAdder(1);
+								drillTime[i] = (stopTime - startTime);
+								iAdder(1);
+								$('div.name').html('<div class="shots name">' + drillName[i] + ' x ' + reps + ' makes </div>');
+								shotMake = 0
+								shotMiss = 0
+								$('div.made').replaceWith("<div class='shots made'>0 / 0 = 0%</div>");
+							} else {
+								alert('Keep shooting until ' + reps + ' makes');
+							};
+						};	
+					} else
+					
+					//Covers workouts 2-5
+					if(i > 0) {
+						if(shotMake < reps) {
+							alert('Keep shooting until ' + reps + ' makes');	
+						} else {
+							//if reps are complete
+							if(shotMake == reps) {
+								if(i == drillName.length - 1) {
+									//stores make and miss data, workout time of final drill, shows workout stats
+									drillMakeMiss[a] = shotMake
+									aAdder(1)
+									drillMakeMiss[a] = shotMiss
+									drillTime[i] = (stopTime - startTime);
+									$('div.name').replaceWith('<div class="shots name"><h1><strong>Workout Complete!</br>Practice Stats:</strong></h1></br><strong>' + 
+										drillName[0] + ':</strong> ' + drillMakeMiss[0] + ' / ' + (drillMakeMiss[0] + drillMakeMiss[1]) + ' = ' + (drillMakeMiss[0]/(drillMakeMiss[0] + drillMakeMiss[1])*100).toFixed(1) + '%     <strong>Time:</strong> ' + millisToMinutesAndSeconds(drillTime[0]) + '</br><strong>' + 
+										drillName[1] + ':</strong> ' + drillMakeMiss[2] + ' / ' + (drillMakeMiss[2] + drillMakeMiss[3]) + ' = ' + (drillMakeMiss[2]/(drillMakeMiss[2] + drillMakeMiss[3])*100).toFixed(1) + '%     <strong>Time:</strong> ' + millisToMinutesAndSeconds(drillTime[1]) + '</br><strong>' + 
+										drillName[2] + ':</strong> ' + drillMakeMiss[4] + ' / ' + (drillMakeMiss[4] + drillMakeMiss[5]) + ' = ' + (drillMakeMiss[4]/(drillMakeMiss[4] + drillMakeMiss[5])*100).toFixed(1) + '%     <strong>Time:</strong> ' + millisToMinutesAndSeconds(drillTime[2]) + '</br><strong>' + 
+										drillName[3] + ':</strong> ' + drillMakeMiss[6] + ' / ' + (drillMakeMiss[6] + drillMakeMiss[7]) + ' = ' + (drillMakeMiss[6]/(drillMakeMiss[6] + drillMakeMiss[7])*100).toFixed(1) + '%     <strong>Time:</strong> ' + millisToMinutesAndSeconds(drillTime[3]) + '</br><strong>' + 
+										drillName[4] + ':</strong> ' + drillMakeMiss[8] + ' / ' + (drillMakeMiss[8] + drillMakeMiss[9]) + ' = ' + (drillMakeMiss[8]/(drillMakeMiss[8] + drillMakeMiss[9])*100).toFixed(1) + '%     <strong>Time:</strong> ' + millisToMinutesAndSeconds(drillTime[4]) + '</br>' + '</div>');
+										
+									$('div.made').empty();
+									aAdder(1);
+									iAdder(1);
+								} else {
+									//stores make and miss data, stores workout time, changes to next drill
+									drillMakeMiss[a] = shotMake
+									aAdder(1)
+									drillMakeMiss[a] = shotMiss
+									aAdder(1);
+									drillTime[i] = (stopTime - startTime);
+									iAdder(1);
+									$('div.name').html('<div class="shots name">' + drillName[i] + ' x '+ reps + ' makes </div>');
+									shotMake = 0
+									shotMiss = 0
+									$('div.made').replaceWith("<div class='shots made'>0 / 0 = 0%</div>");
+								};				
+							};
+						};
+					};
+				
+					
+				};
+			});
+			
+			// $('#start-time').click(function(){
+			// 	startTime = Date.now();
+			// });
+			// $('#stop-time').click(function(){
+			// 	stopTime = Date.now();
+			// });
+			// $('#show-time').click(function(){
+			// 	$('.time').replaceWith('<div class="time test">' + millisToMinutesAndSeconds(stopTime - startTime) + '</div>');
+			// });
+			
+		});
+	</script>	
+</body>
+</html>
