@@ -21,6 +21,15 @@
 	<div class='time test'></div>
 	
 	<script>
+    /**
+    * All these local variables should be wrapped in a singe object.
+    */
+    var shot = {
+      drill: '',
+      make: 0,
+      miss: 0
+    }
+
 		//Counts makes
 		var shotMake = 0;
 		var makeAdder = function(plusOne){
@@ -50,7 +59,15 @@
 		
 		//Make and miss data
 		var drillMakeMiss = [0,0,0,0,0,0,0,0,0,0];
-	
+
+    // spierce: This is a good start... I'd consider something like:
+    var AVAILABLE_DRILLS = [
+      {name: 'Hesitation-Right'},
+      {name: 'Hesitation-Left'},
+      {name: '1-Dribble Pull-Up-Right'},
+      {name: '1-Dribble Pull-Up-Left'},
+      {name: 'Freethrow'}
+    ];
 		//Workout names
 		var drillName = ['Hesitation-Right', 'Hesitation-Left', '1-Dribble Pull-Up-Right', '1-Dribble Pull-Up-Left', 'Freethrow'];
 		
